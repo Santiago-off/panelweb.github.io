@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../firebase/config';
+import { auth, db } from '../config';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import './Login.css'; // Importa los nuevos estilos

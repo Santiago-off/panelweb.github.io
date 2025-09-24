@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { auth, db } from '../../config';
+import { auth, db } from '../config';
 
 /**
  * Custom hook to get real-time user data from Firestore.

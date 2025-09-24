@@ -1,5 +1,5 @@
 import { signOut } from 'firebase/auth';
-import { auth } from '../firebase/config';
+import { auth } from '../config';
 
 function AccountDisabled({ userData }) {
   const handleCopy = () => {

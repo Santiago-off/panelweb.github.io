@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db } from '../config';
 
 function FirstLogin({ user }) {
   // Genera un token aleatorio y seguro
