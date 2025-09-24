@@ -1,0 +1,275 @@
+.admin-dashboard {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  margin-top: 2rem;
+}
+
+/* Barra lateral de navegación */
+.admin-sidebar {
+  flex: 0 0 200px; /* No crece, no se encoge, base de 200px */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 1rem;
+}
+
+.admin-sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-sidebar-nav li {
+  padding: 12px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #4a5568;
+  transition: background-color 0.2s, color 0.2s;
+  margin-bottom: 0.5rem;
+}
+
+.admin-sidebar-nav li:hover {
+  background-color: #f7fafc;
+}
+
+.admin-sidebar-nav li.active {
+  background-color: #e9e3ff;
+  color: #6a11cb;
+  font-weight: 600;
+}
+
+/* Área de contenido principal */
+.admin-content {
+  flex-grow: 1; /* Ocupa el espacio restante */
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 2rem;
+  min-height: 400px;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.admin-content h2 {
+  margin-top: 0;
+  color: #2d3748;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Estilos para las secciones --- */
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  margin: 0;
+}
+
+.add-button {
+  background-color: #6a11cb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-button:hover {
+  background-color: #5e0ead;
+}
+
+.user-list-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #f7fafc;
+  margin-bottom: 1rem;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.user-info-header {
+  display: flex;
+  align-items: center;
+}
+
+.log-item .user-info {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.web-list-item .user-info {
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user-info span {
+  color: #718096;
+  font-size: 0.9rem;
+}
+
+.user-status-tag {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.status-disabled {
+  background-color: #fed7d7;
+  color: #c53030;
+}
+
+/* Estilos para el indicador de estado de la web */
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-online {
+  background-color: #48bb78; /* Verde */
+}
+
+.status-maintenance {
+  background-color: #ecc94b; /* Amarillo */
+}
+
+.status-offline {
+  background-color: #f56565; /* Rojo */
+}
+/* --- Estilos para el Modal --- */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #2d3748;
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #718096;
+}
+
+.modal-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* --- Estilos para el Modal de Gestión --- */
+.manage-modal-body {
+  display: flex;
+  gap: 2rem;
+}
+
+.manage-modal-tabs {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 0 0 150px;
+}
+
+.manage-modal-tabs li {
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.manage-modal-tabs li.active {
+  background-color: #f0e9ff;
+  color: #6a11cb;
+}
