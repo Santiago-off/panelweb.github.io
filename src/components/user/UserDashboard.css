@@ -1,0 +1,52 @@
+/* src/components/user/UserDashboard.css */
+
+.user-dashboard {
+  /* El contenedor principal ya tiene padding del .dashboard-content */
+}
+
+.sites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: var(--spacing-6);
+}
+
+.site-card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--border-color);
+  padding: var(--spacing-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+  transition: var(--transition-normal);
+}
+
+.site-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-color);
+}
+
+.site-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.site-card-header h4 {
+  margin: 0;
+  font-size: var(--font-size-xl);
+}
+
+.site-card-domain {
+  color: var(--text-secondary-color);
+  font-family: var(--font-family-mono);
+  margin: 0;
+}
+
+.site-card-footer {
+  margin-top: var(--spacing-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

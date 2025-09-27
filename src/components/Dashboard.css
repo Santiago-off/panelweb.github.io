@@ -1,87 +1,90 @@
-/* Estilo general del cuerpo para el dashboard */
-body {
-  background-color: #f4f7f6;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+/* Definición de variables de color para fácil personalización */
+:root {
+  --background-light: #f4f7f6;
+  --background-white: #ffffff;
+  --primary-text: #2d3748;
+  --secondary-text: #718096;
+  --border-color: #e2e8f0;
+  --shadow-color: rgba(0, 0, 0, 0.05);
+  --accent-bg: #e0e7ff;
+  --accent-text: #4338ca;
+  --button-bg: #f8f9fa;
+  --button-hover-bg: #e9ecef;
 }
 
+/* Estilos para el contenedor principal del Dashboard */
 .dashboard-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh;
+  background-color: var(--background-light);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Cabecera superior */
+/* Estilos para la pantalla de carga */
+.loading-fullscreen {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 1.5rem;
+  color: var(--secondary-text);
+  background-color: var(--background-light);
+}
+
+/* Estilos para la cabecera del Dashboard */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  width: 100%;
-  box-sizing: border-box;
+  background-color: var(--background-white);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 2px 4px var(--shadow-color);
 }
 
 .header-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
+  font-size: 1.8rem;
+  color: var(--primary-text);
   margin: 0;
 }
 
-.logout-button {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: transparent;
-  color: #555;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: var(--primary-text);
 }
 
-.logout-button:hover {
-  background-color: #f1f1f1;
-  color: #111;
-}
-
-/* Contenido principal */
-.dashboard-content {
-  padding: 2rem;
-  flex-grow: 1;
-}
-
-.welcome-message h1 {
+.user-role-tag {
+  background-color: var(--accent-bg);
+  color: var(--accent-text);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem; /* Un radio de borde más estándar */
+  font-size: 0.8rem;
   font-weight: 600;
-  color: #2d3748;
-  margin-top: 0;
+  text-transform: capitalize;
 }
 
-.welcome-message p {
-  color: #718096;
-  font-size: 1.1rem;
+/* Estilos para el contenido principal */
+.dashboard-content {
+  flex-grow: 1;
+  padding: 2rem;
+  overflow-y: auto;
 }
 
-/* Cuadrícula para las tarjetas de los sitios */
-.sites-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-top: 2rem;
+/* Estilos para botones */
+.button-secondary {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid var(--border-color);
+  background-color: var(--button-bg);
+  color: var(--primary-text);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease-in-out;
 }
 
-/* Tarjeta individual para cada sitio (ejemplo) */
-.site-card {
-  background-color: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: fadeIn 0.5s ease-in-out;
-}
-
-.site-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+.button-secondary:hover {
+  background-color: var(--button-hover-bg);
 }

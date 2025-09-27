@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './design-system.css'; // Importa el sistema de diseño
 import App from './App.js';
 import { BrowserRouter } from 'react-router-dom';
 
