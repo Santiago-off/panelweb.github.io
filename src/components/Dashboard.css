@@ -1,87 +1,239 @@
-/* Estilo general del cuerpo para el dashboard */
-body {
-  background-color: #f4f7f6;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+/* === Advanced UI Overhaul: Dashboard Design System === */
+
+/* 1. Root Variables for Theming */
+:root {
+  --primary-color: #4F46E5; /* Un morado vibrante y moderno */
+  --primary-hover: #4338CA;
+  --secondary-color: #10B981; /* Verde esmeralda para éxito y acciones positivas */
+  --danger-color: #EF4444; /* Rojo para errores y acciones destructivas */
+  --danger-hover: #DC2626;
+  --warning-color: #F59E0B; /* Ámbar para advertencias */
+
+  --background-primary: #F3F4F6; /* Un gris muy claro y limpio */
+  --background-secondary: #FFFFFF;
+  --background-tertiary: #E5E7EB; /* Ligeramente más oscuro para bordes y separadores */
+
+  --text-primary: #1F2937; /* Casi negro para el texto principal */
+  --text-secondary: #6B7280; /* Gris para texto secundario y descriptivo */
+  --text-on-primary: #FFFFFF;
+
+  --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --border-radius-md: 0.5rem; /* 8px */
+  --border-radius-lg: 0.75rem; /* 12px */
+
+  --transition-fast: all 0.2s ease-in-out;
 }
 
+/* 2. General Body & Font Styling */
+body {
+  background-color: var(--background-primary);
+  font-family: var(--font-family-sans);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 3. Main Dashboard Layout */
 .dashboard-container {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-/* Cabecera superior */
 .dashboard-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  background-color: var(--background-secondary);
+  border-bottom: 1px solid var(--background-tertiary);
+  box-shadow: var(--shadow-sm);
   width: 100%;
   box-sizing: border-box;
+  z-index: 10;
 }
 
 .header-title {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: #333;
+  color: var(--text-primary);
   margin: 0;
 }
 
-.logout-button {
-  padding: 8px 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: transparent;
-  color: #555;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.logout-button:hover {
-  background-color: #f1f1f1;
-  color: #111;
-}
-
-/* Contenido principal */
 .dashboard-content {
-  padding: 2rem;
+  padding: 2.5rem;
   flex-grow: 1;
 }
 
-.welcome-message h1 {
+/* 4. Universal Component Styles */
+
+/* Buttons */
+.logout-button, .add-button {
+  padding: 0.6rem 1.2rem;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius-md);
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #2d3748;
-  margin-top: 0;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.welcome-message p {
-  color: #718096;
-  font-size: 1.1rem;
+.logout-button {
+  background-color: var(--background-secondary);
+  border-color: var(--background-tertiary);
+  color: var(--text-secondary);
 }
 
-/* Cuadrícula para las tarjetas de los sitios */
+.logout-button:hover {
+  border-color: #D1D5DB;
+  background-color: #F9FAFB;
+  color: var(--text-primary);
+}
+
+.add-button {
+  background-color: var(--primary-color);
+  color: var(--text-on-primary);
+}
+
+.add-button:hover {
+  background-color: var(--primary-hover);
+}
+
+.add-button:disabled {
+  background-color: #A5B4FC;
+  cursor: not-allowed;
+}
+
+/* Section Header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--background-tertiary);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-header h2 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+/* Universal Card Grid */
 .sites-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 1.5rem;
-  margin-top: 2rem;
 }
 
-/* Tarjeta individual para cada sitio (ejemplo) */
+/* Universal Card Style */
 .site-card {
-  background-color: white;
-  border-radius: 12px;
+  background-color: var(--background-secondary);
+  border-radius: var(--border-radius-lg);
   padding: 1.5rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  animation: fadeIn 0.5s ease-in-out;
+  box-shadow: var(--shadow-md);
+  transition: var(--transition-fast);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid transparent;
 }
 
 .site-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--primary-color);
+}
+
+.site-card.disabled {
+  background-color: #F9FAFB;
+  opacity: 0.7;
+}
+
+.site-card.disabled:hover {
+  transform: none;
+  box-shadow: var(--shadow-md);
+  border-color: transparent;
+}
+
+.site-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
+.site-card-header h3 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.site-card p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 0;
+  flex-grow: 1;
+}
+
+.site-card-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Status Tags */
+.user-status-tag {
+  padding: 0.25rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-enabled {
+  background-color: #D1FAE5;
+  color: #065F46;
+}
+
+.status-disabled {
+  background-color: #FEE2E2;
+  color: #991B1B;
+}
+
+/* Maintenance Status Indicator */
+.site-card-maintenance {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  background-color: var(--background-primary);
+  border-radius: var(--border-radius-md);
+  margin-top: 1rem;
+}
+
+.site-card-maintenance span {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.maintenance-status {
+  font-weight: 600 !important;
+}
+.maintenance-status.on {
+  color: var(--danger-color) !important;
+}
+.maintenance-status.off {
+  color: var(--secondary-color) !important;
 }

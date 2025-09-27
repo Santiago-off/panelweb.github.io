@@ -1,32 +1,35 @@
-/* Contenedor principal que centra todo en la página */
+/* === Advanced UI Overhaul: Login Page === */
+
+/* 1. Main Container using Design System Variables */
 .login-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  /* Un fondo degradado sutil y moderno */
-  background-image: linear-gradient(to top right, #6a11cb 0%, #2575fc 100%);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--background-primary);
+  font-family: var(--font-family-sans);
+  padding: 1rem;
 }
 
-/* El panel central donde va el formulario */
+/* 2. Login Panel with Modern Styling */
 .login-panel {
-  background: white;
-  padding: 2.5rem 2rem;
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  background: var(--background-secondary);
+  padding: 2.5rem;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-lg);
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
   text-align: center;
-  /* Animación de entrada */
-  animation: fadeIn 0.5s ease-in-out;
+  border: 1px solid var(--background-tertiary);
+  animation: fadeInFromBottom 0.6s ease-in-out;
 }
 
-/* Definición de la animación */
-@keyframes fadeIn {
+/* 3. Animation for a smoother entry */
+@keyframes fadeInFromBottom {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -34,60 +37,79 @@
   }
 }
 
+/* 4. Header/Title inside the panel */
 .login-panel h2 {
   margin-top: 0;
-  margin-bottom: 1.5rem;
-  color: #333;
-  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+  font-size: 1.75rem;
+  font-weight: 700;
 }
 
+/* 5. Form Layout */
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Espacio entre los inputs y el botón */
+  gap: 1.25rem; /* More generous spacing */
 }
 
+/* 6. Input Styling */
 .login-input {
   width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--background-tertiary);
+  border-radius: var(--border-radius-md);
   font-size: 1rem;
-  box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
-  transition: border-color 0.3s, box-shadow 0.3s;
+  box-sizing: border-box;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+  transition: var(--transition-fast);
+}
+
+.login-input::placeholder {
+  color: var(--text-secondary);
 }
 
 .login-input:focus {
   outline: none;
-  border-color: #2575fc;
-  box-shadow: 0 0 0 3px rgba(37, 117, 252, 0.2);
+  border-color: var(--primary-color);
+  background-color: var(--background-secondary);
+  box-shadow: 0 0 0 3px #4f46e533; /* Subtle focus ring using primary color with alpha */
 }
 
+/* 7. Button Styling (reusing .add-button for consistency) */
 .login-button {
-  padding: 12px 15px;
+  padding: 0.9rem 1.5rem;
   border: none;
-  border-radius: 8px;
-  background-color: #2575fc;
-  color: white;
+  border-radius: var(--border-radius-md);
+  background-color: var(--primary-color);
+  color: var(--text-on-primary);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s, transform 0.2s;
+  transition: var(--transition-fast);
+  width: 100%;
+  margin-top: 0.5rem;
 }
 
 .login-button:hover {
-  background-color: #1a5fdd;
+  background-color: var(--primary-hover);
+  box-shadow: var(--shadow-md);
 }
 
 .login-button:active {
   transform: scale(0.98);
 }
 
+/* 8. Error Message Styling */
 .login-error {
-  color: #e53e3e;
-  background-color: #fed7d7;
-  border-radius: 8px;
-  padding: 10px;
+  color: var(--danger-color);
+  background-color: #FEE2E2;
+  border-radius: var(--border-radius-md);
+  padding: 0.9rem 1rem;
   margin-top: 1rem;
   font-size: 0.9rem;
+  font-weight: 500;
+  text-align: left;
+  border: 1px solid var(--danger-color);
 }
