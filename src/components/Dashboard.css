@@ -1,11 +1,12 @@
 /* Definición de variables de color para fácil personalización */
 :root {
-  --background-light: #f4f7f6;
+  --background-light: #f8f9fa;
   --background-white: #ffffff;
   --primary-text: #2d3748;
   --secondary-text: #718096;
   --border-color: #e2e8f0;
-  --shadow-color: rgba(0, 0, 0, 0.05);
+  --shadow-light: rgba(0, 0, 0, 0.02);
+  --shadow-medium: rgba(0, 0, 0, 0.06);
   --accent-bg: #e0e7ff;
   --accent-text: #4338ca;
   --button-bg: #f8f9fa;
@@ -14,11 +15,12 @@
 
 /* Estilos para el contenedor principal del Dashboard */
 .dashboard-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-rows: auto 1fr; /* Fila para el header, el resto para el contenido */
   height: 100vh;
   background-color: var(--background-light);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden; /* Evita el scroll en el contenedor principal */
 }
 
 /* Estilos para la pantalla de carga */
@@ -40,7 +42,8 @@
   padding: 1rem 2rem;
   background-color: var(--background-white);
   border-bottom: 1px solid var(--border-color);
-  box-shadow: 0 2px 4px var(--shadow-color);
+  box-shadow: 0 2px 4px var(--shadow-light);
+  z-index: 10; /* Asegura que la cabecera esté por encima del contenido */
 }
 
 .header-title {
@@ -70,7 +73,21 @@
 .dashboard-content {
   flex-grow: 1;
   padding: 2rem;
-  overflow-y: auto;
+  overflow-y: auto; /* Permite el scroll solo en el área de contenido */
+}
+
+/* Estilo de "Tarjeta" para envolver el contenido principal */
+.card {
+  background-color: var(--background-white);
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 12px var(--shadow-medium);
+  border: 1px solid var(--border-color);
+}
+
+/* Estilos para títulos dentro de las tarjetas */
+.card h2 {
+  color: var(--primary-text);
 }
 
 /* Estilos para botones */
@@ -81,10 +98,21 @@
   color: var(--primary-text);
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s ease-in-out;
+  font-weight: 500; /* Ligeramente más suave */
+  transition: all 0.2s ease-in-out;
 }
 
 .button-secondary:hover {
   background-color: var(--button-hover-bg);
+  border-color: #ced4da;
+}
+
+/* Media Query para responsividad en pantallas pequeñas */
+@media (max-width: 768px) {
+  .dashboard-header, .dashboard-content {
+    padding: 1rem;
+  }
+
+  .header-title { font-size: 1.5rem; }
+  .header-actions { gap: 0.5rem; }
 }

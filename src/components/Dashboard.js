@@ -85,9 +85,11 @@ function Dashboard() {
       </header>
       <main className="dashboard-content">
         {/* Renderizado condicional basado en el rol */}
-        {userData?.role === 'admin' && <AdminDashboard />}
-        {userData?.role === 'staff' && <StaffDashboard />}
-        {userData?.role === 'usuario' && <UserDashboard />}
+        <div className="card">
+          {userData?.role === 'admin' && <AdminDashboard />}
+          {userData?.role === 'staff' && <StaffDashboard />}
+          {userData?.role === 'usuario' && <UserDashboard />}
+        </div>
       </main>
     </div>
   );
