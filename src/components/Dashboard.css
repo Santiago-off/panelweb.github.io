@@ -1,18 +1,20 @@
 /* Definición de variables de color para fácil personalización */
 :root {
   /* Paleta de colores oscuros */
-  --background-light: #111827; /* Fondo principal (muy oscuro) */
-  --background-white: #1f2937; /* Fondo de tarjetas y cabecera (un poco más claro) */
-  --primary-text: #f9fafb;     /* Texto principal (casi blanco) */
-  --secondary-text: #9ca3af;   /* Texto secundario (gris claro) */
-  --border-color-light: #374151; /* Borde sutil */
-  --border-color: #4b5563;       /* Borde un poco más visible */
+  --background-dark: #111827;      /* Fondo principal (muy oscuro) */
+  --background-medium: #1f2937;    /* Fondo de tarjetas y cabecera */
+  --background-light: #374151;     /* Elementos interactivos como inputs */
+  --primary-text: #f9fafb;         /* Texto principal (casi blanco) */
+  --secondary-text: #9ca3af;       /* Texto secundario (gris claro) */
+  --border-color-light: #374151;   /* Borde sutil */
+  --border-color: #4b5563;           /* Borde un poco más visible */
   --shadow-light: rgba(0, 0, 0, 0.1);
   --shadow-medium: rgba(0, 0, 0, 0.2);
-  --primary-color: #4f46e5;
-  --primary-color-light: rgba(79, 70, 229, 0.15); /* Fondo del elemento activo en el menú */
-  --button-bg: #374151;
-  --button-hover-bg: #4b5563;
+  --primary-color: #6366f1;        /* Un índigo más brillante */
+  --primary-color-darker: #4f46e5;
+  --primary-color-light: rgba(99, 102, 241, 0.15); /* Fondo del elemento activo en el menú */
+  --button-bg: #4b5563;
+  --button-hover-bg: #6b7280;
 }
 
 /* Estilos para el contenedor principal del Dashboard */
@@ -20,7 +22,7 @@
   display: grid;
   grid-template-rows: auto 1fr; /* Fila para el header, el resto para el contenido */
   height: 100vh;
-  background-color: var(--background-light);
+  background-color: var(--background-dark);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   overflow: hidden; /* Evita el scroll en el contenedor principal */
 }
@@ -33,7 +35,7 @@
   height: 100vh;
   font-size: 1.5rem;
   color: var(--secondary-text);
-  background-color: var(--background-light);
+  background-color: var(--background-dark);
 }
 
 /* Estilos para la cabecera del Dashboard */
@@ -42,7 +44,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: var(--background-white);
+  background-color: var(--background-medium);
   border-bottom: 1px solid var(--border-color-light);
   box-shadow: 0 2px 4px var(--shadow-light);
   z-index: 10; /* Asegura que la cabecera esté por encima del contenido */
@@ -80,7 +82,7 @@
 
 /* Estilo de "Tarjeta" para envolver el contenido principal */
 .card {
-  background-color: var(--background-white);
+  background-color: var(--background-medium);
   border-radius: 8px;
   padding: 0; /* El padding se manejará en los componentes hijos */
   box-shadow: 0 4px 12px var(--shadow-medium);

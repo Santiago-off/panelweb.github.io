@@ -26,24 +26,27 @@ const AdminDashboard = () => {
   const [activeSection, setActiveSection] = useState('usuarios');
   const [users, setUsers] = useState([]);
   const [sites, setSites] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+  const [loadingSites, setLoadingSites] = useState(true);
 
   useEffect(() => {
     // Cargar la lista de usuarios y sitios para todo el panel de admin
     const usersUnsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
       const usersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setUsers(usersData);
-      setLoading(false);
+      setLoadingUsers(false);
     }, (error) => {
       console.error("Error al obtener la lista de usuarios:", error);
-      setLoading(false);
+      setLoadingUsers(false);
     });
 
     const sitesUnsubscribe = onSnapshot(collection(db, "sites"), (snapshot) => {
       const sitesData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setSites(sitesData);
+      setLoadingSites(false);
     }, (error) => {
       console.error("Error al obtener la lista de sitios:", error);
+      setLoadingSites(false);
     });
 
     return () => {
@@ -53,7 +56,7 @@ const AdminDashboard = () => {
   }, []);
 
   const renderSection = () => {
-    if (loading) {
+    if (loadingUsers || loadingSites) {
       return <div>Cargando datos...</div>;
     }
 
@@ -61,7 +64,7 @@ const AdminDashboard = () => {
       case 'usuarios':
         return <UserManagement users={users} sites={sites} />;
       case 'webs':
-        return <WebManagement users={users} sites={sites} />;
+        return <WebManagement sites={sites} users={users} />;
       case 'tickets':
         return <TicketManagement users={users} />;
       case 'metricas':

@@ -1,3 +1,6 @@
+@import './Metrics.css';
+@import './TicketManagement.css';
+
 /* Estructura principal del panel de administrador con menú lateral */
 .admin-dashboard {
   display: grid;
@@ -8,7 +11,7 @@
 
 /* Estilos para el menú lateral (sidebar) */
 .admin-sidebar {
-  background-color: var(--background-white);
+  background-color: var(--background-medium);
   border-right: 1px solid var(--border-color-light);
   padding: 0.5rem 0;
 }
@@ -33,7 +36,7 @@
 }
 
 .admin-sidebar-nav li:hover {
-  background-color: var(--background-light);
+  background-color: var(--background-dark);
   color: var(--primary-text);
 }
 
@@ -41,7 +44,7 @@
 .admin-sidebar-nav li.active {
   background-color: var(--primary-color-light);
   color: var(--primary-color);
-  font-weight: 600;
+  font-weight: 700;
 }
 
 /* Estilos para los iconos del menú */
@@ -117,13 +120,20 @@
 .button-primary {
   background-color: var(--primary-color);
   color: #ffffff;
-  box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
+  box-shadow: 0 4px 14px 0 rgba(99, 102, 241, 0.3);
 }
 
 .button-primary:hover {
-  background-color: #4338ca; /* Un poco más oscuro */
-  box-shadow: 0 6px 16px 0 rgba(79, 70, 229, 0.45);
+  background-color: var(--primary-color-darker);
+  box-shadow: 0 6px 16px 0 rgba(99, 102, 241, 0.35);
   transform: translateY(-1px);
+}
+
+.button-primary:disabled, .button-danger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
 /* El .button-secondary ya está definido globalmente, pero lo dejamos por si se necesita aquí */
@@ -147,14 +157,48 @@
   color: var(--secondary-text);
 }
 
-.form-group input, .form-group select {
-  background-color: var(--background-light);
+.form-group input, .form-group select, .form-group textarea {
+  background-color: var(--background-dark);
   color: var(--primary-text);
   border: 1px solid var(--border-color);
   border-radius: 6px;
   padding: 0.75rem;
   font-size: 1rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.password-input-wrapper {
+  position: relative;
+  display: flex;
+}
+
+.password-input-wrapper input {
+  flex-grow: 1;
+  padding-right: 70px; /* Espacio para el botón */
+}
+
+.password-toggle-button {
+  position: absolute;
+  right: 1px;
+  top: 1px;
+  bottom: 1px;
+  border: none;
+  background-color: var(--border-color-light);
+  color: var(--secondary-text);
+  padding: 0 1rem;
+  cursor: pointer;
+  border-radius: 0 5px 5px 0;
+}
+
+.form-group input[readOnly] {
+  background-color: var(--background-dark);
+  color: var(--secondary-text);
+  cursor: not-allowed;
 }
 
 .form-group select[multiple] {
@@ -166,10 +210,10 @@
   padding: 0.5rem;
 }
 
-.form-group input:focus, .form-group select:focus {
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+  box-shadow: 0 0 0 3px var(--primary-color-light);
 }
 
 .form-group small {
@@ -193,6 +237,42 @@
   padding: 0 0.5rem;
   font-weight: 600;
   color: var(--secondary-text);
+}
+
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border-color-light);
+  margin-bottom: 1.5rem;
+}
+
+.tab-button {
+  background: none;
+  border: none;
+  color: var(--secondary-text);
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.tab-button:hover {
+  color: var(--primary-text);
+}
+
+.tab-button.active {
+  color: var(--primary-color);
+}
+
+.tab-button.active::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background-color: var(--primary-color);
 }
 
 .modal-footer {
@@ -231,7 +311,7 @@ th, td {
 }
 
 thead {
-  background-color: var(--background-light);
+  background-color: var(--background-dark);
 }
 
 th {
@@ -242,7 +322,7 @@ th {
 }
 
 tbody tr:hover {
-  background-color: var(--background-light);
+  background-color: var(--background-dark);
 }
 
 .role-tag, .status-tag {
@@ -258,8 +338,14 @@ tbody tr:hover {
 .role-staff { background-color: rgba(249, 115, 22, 0.1); color: #f97316; }
 .role-usuario { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; }
 
+.unassigned-user {
+  color: var(--secondary-text);
+  font-style: italic;
+}
+
 .status-active { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; }
 .status-suspended { background-color: rgba(249, 115, 22, 0.1); color: #f97316; }
+.status-maintenance { background-color: rgba(249, 115, 22, 0.1); color: #f97316; }
 .status-disabled { background-color: rgba(107, 114, 128, 0.1); color: #6b7280; }
 
 .action-buttons {
@@ -292,6 +378,18 @@ tbody tr:hover {
   border-color: #ef4444;
 }
 
+.empty-table-message {
+  text-align: center;
+  color: var(--secondary-text);
+  padding: 2rem;
+}
+
+td a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: text-decoration 0.2s ease;
+}
+td a:hover { text-decoration: underline; }
 /* --- Estilos para Logs --- */
 .logs-container {
   display: flex;
@@ -301,7 +399,7 @@ tbody tr:hover {
 }
 
 .log-item {
-  background-color: var(--background-light);
+  background-color: var(--background-medium);
   border-radius: 6px;
   padding: 1rem;
   border-left: 4px solid var(--primary-color);
@@ -318,7 +416,7 @@ tbody tr:hover {
 .log-timestamp { font-size: 0.8rem; color: var(--secondary-text); }
 .log-body p { margin: 0.25rem 0; }
 .log-details pre {
-  background-color: var(--background-light);
+  background-color: var(--background-dark);
   border: 1px solid var(--border-color-light);
   padding: 0.5rem;
   border-radius: 4px;
