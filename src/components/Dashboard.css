@@ -1,16 +1,18 @@
 /* Definición de variables de color para fácil personalización */
 :root {
-  --background-light: #f8f9fa;
-  --background-white: #ffffff;
-  --primary-text: #2d3748;
-  --secondary-text: #718096;
-  --border-color: #e2e8f0;
-  --shadow-light: rgba(0, 0, 0, 0.02);
-  --shadow-medium: rgba(0, 0, 0, 0.06);
-  --accent-bg: #e0e7ff;
-  --accent-text: #4338ca;
-  --button-bg: #f8f9fa;
-  --button-hover-bg: #e9ecef;
+  /* Paleta de colores oscuros */
+  --background-light: #111827; /* Fondo principal (muy oscuro) */
+  --background-white: #1f2937; /* Fondo de tarjetas y cabecera (un poco más claro) */
+  --primary-text: #f9fafb;     /* Texto principal (casi blanco) */
+  --secondary-text: #9ca3af;   /* Texto secundario (gris claro) */
+  --border-color-light: #374151; /* Borde sutil */
+  --border-color: #4b5563;       /* Borde un poco más visible */
+  --shadow-light: rgba(0, 0, 0, 0.1);
+  --shadow-medium: rgba(0, 0, 0, 0.2);
+  --primary-color: #4f46e5;
+  --primary-color-light: rgba(79, 70, 229, 0.15); /* Fondo del elemento activo en el menú */
+  --button-bg: #374151;
+  --button-hover-bg: #4b5563;
 }
 
 /* Estilos para el contenedor principal del Dashboard */
@@ -41,7 +43,7 @@
   align-items: center;
   padding: 1rem 2rem;
   background-color: var(--background-white);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color-light);
   box-shadow: 0 2px 4px var(--shadow-light);
   z-index: 10; /* Asegura que la cabecera esté por encima del contenido */
 }
@@ -60,8 +62,8 @@
 }
 
 .user-role-tag {
-  background-color: var(--accent-bg);
-  color: var(--accent-text);
+  background-color: var(--primary-color-light);
+  color: var(--primary-color);
   padding: 0.25rem 0.75rem;
   border-radius: 1rem; /* Un radio de borde más estándar */
   font-size: 0.8rem;
@@ -80,9 +82,10 @@
 .card {
   background-color: var(--background-white);
   border-radius: 8px;
-  padding: 2rem;
+  padding: 0; /* El padding se manejará en los componentes hijos */
   box-shadow: 0 4px 12px var(--shadow-medium);
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border-color-light);
+  overflow: hidden; /* Para que los bordes redondeados afecten al contenido */
 }
 
 /* Estilos para títulos dentro de las tarjetas */
@@ -98,13 +101,13 @@
   color: var(--primary-text);
   border-radius: 6px;
   cursor: pointer;
-  font-weight: 500; /* Ligeramente más suave */
-  transition: all 0.2s ease-in-out;
+  font-weight: 600;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .button-secondary:hover {
   background-color: var(--button-hover-bg);
-  border-color: #ced4da;
+  border-color: var(--border-color);
 }
 
 /* Media Query para responsividad en pantallas pequeñas */

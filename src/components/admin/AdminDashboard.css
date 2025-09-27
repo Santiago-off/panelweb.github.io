@@ -1,0 +1,328 @@
+/* Estructura principal del panel de administrador con menú lateral */
+.admin-dashboard {
+  display: grid;
+  grid-template-columns: 260px 1fr; /* Columna fija para el menú, el resto para el contenido */
+  gap: 2rem;
+  height: 100%;
+}
+
+/* Estilos para el menú lateral (sidebar) */
+.admin-sidebar {
+  background-color: var(--background-white);
+  border-right: 1px solid var(--border-color-light);
+  padding: 0.5rem 0;
+}
+
+.admin-sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.admin-sidebar-nav li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  margin: 0.25rem 0.5rem;
+  cursor: pointer;
+  color: var(--secondary-text);
+  font-weight: 500;
+  border-radius: 6px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.admin-sidebar-nav li:hover {
+  background-color: var(--background-light);
+  color: var(--primary-text);
+}
+
+/* Estilo para el elemento activo en el menú */
+.admin-sidebar-nav li.active {
+  background-color: var(--primary-color-light);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+/* Estilos para los iconos del menú */
+.sidebar-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--secondary-text);
+  transition: color 0.2s ease;
+}
+
+.admin-sidebar-nav li.active .sidebar-icon {
+  color: var(--primary-color);
+}
+
+/* Contenedor para el contenido principal a la derecha del menú */
+.admin-content {
+  padding: 1rem;
+  overflow-y: auto;
+}
+
+/* Estilos para la sección que se está mostrando */
+.admin-content > div {
+  animation: fade-in-up 0.4s ease-out;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- Estilos de Componentes Reutilizables --- */
+
+/* Encabezados de Sección */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color-light);
+  padding-bottom: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--primary-text);
+}
+
+.section-description {
+  color: var(--secondary-text);
+  margin-top: 0;
+  margin-bottom: 2rem;
+}
+
+/* Estilos de Botones */
+.button-primary, .button-secondary {
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.button-primary {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  box-shadow: 0 4px 14px 0 rgba(79, 70, 229, 0.39);
+}
+
+.button-primary:hover {
+  background-color: #4338ca; /* Un poco más oscuro */
+  box-shadow: 0 6px 16px 0 rgba(79, 70, 229, 0.45);
+  transform: translateY(-1px);
+}
+
+/* El .button-secondary ya está definido globalmente, pero lo dejamos por si se necesita aquí */
+
+/* Formularios dentro del Modal */
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--secondary-text);
+}
+
+.form-group input, .form-group select {
+  background-color: var(--background-light);
+  color: var(--primary-text);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-group select[multiple] {
+  min-height: 120px;
+  padding: 0.5rem;
+}
+
+.form-group select[multiple] option {
+  padding: 0.5rem;
+}
+
+.form-group input:focus, .form-group select:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.3);
+}
+
+.form-group small {
+  font-size: 0.8rem;
+  color: var(--secondary-text);
+  margin-top: -0.25rem;
+  display: block;
+}
+
+.modal-form fieldset {
+  border: 1px solid var(--border-color-light);
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal-form legend {
+  padding: 0 0.5rem;
+  font-weight: 600;
+  color: var(--secondary-text);
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+  border-top: 1px solid var(--border-color-light);
+}
+
+.user-list-placeholder {
+  border: 2px dashed var(--border-color-light);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  color: var(--secondary-text);
+}
+
+/* --- Estilos para la Tabla de Usuarios --- */
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+th, td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color-light);
+  white-space: nowrap;
+}
+
+thead {
+  background-color: var(--background-light);
+}
+
+th {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+}
+
+tbody tr:hover {
+  background-color: var(--background-light);
+}
+
+.role-tag, .status-tag {
+  padding: 0.2rem 0.6rem;
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: inline-block;
+  text-transform: capitalize;
+}
+
+.role-admin { background-color: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.role-staff { background-color: rgba(249, 115, 22, 0.1); color: #f97316; }
+.role-usuario { background-color: rgba(59, 130, 246, 0.1); color: #3b82f6; }
+
+.status-active { background-color: rgba(34, 197, 94, 0.1); color: #22c55e; }
+.status-suspended { background-color: rgba(249, 115, 22, 0.1); color: #f97316; }
+.status-disabled { background-color: rgba(107, 114, 128, 0.1); color: #6b7280; }
+
+.action-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.button-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: 1px solid var(--border-color);
+  color: var(--secondary-text);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.button-icon:hover {
+  background-color: var(--button-hover-bg);
+  color: var(--primary-text);
+  border-color: var(--border-color);
+}
+
+.button-danger:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+/* --- Estilos para Logs --- */
+.logs-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.log-item {
+  background-color: var(--background-light);
+  border-radius: 6px;
+  padding: 1rem;
+  border-left: 4px solid var(--primary-color);
+}
+
+.log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.log-action { font-weight: 600; color: var(--primary-text); }
+.log-timestamp { font-size: 0.8rem; color: var(--secondary-text); }
+.log-body p { margin: 0.25rem 0; }
+.log-details pre {
+  background-color: var(--background-light);
+  border: 1px solid var(--border-color-light);
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
