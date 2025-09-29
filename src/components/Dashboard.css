@@ -1,41 +1,40 @@
-/* Definición de variables de color para fácil personalización */
-:root {
-  /* Paleta de colores oscuros */
-  --background-dark: #111827;      /* Fondo principal (muy oscuro) */
-  --background-medium: #1f2937;    /* Fondo de tarjetas y cabecera */
-  --background-light: #374151;     /* Elementos interactivos como inputs */
-  --primary-text: #f9fafb;         /* Texto principal (casi blanco) */
-  --secondary-text: #9ca3af;       /* Texto secundario (gris claro) */
-  --border-color-light: #374151;   /* Borde sutil */
-  --border-color: #4b5563;           /* Borde un poco más visible */
-  --shadow-light: rgba(0, 0, 0, 0.1);
-  --shadow-medium: rgba(0, 0, 0, 0.2);
-  --primary-color: #6366f1;        /* Un índigo más brillante */
-  --primary-color-darker: #4f46e5;
-  --primary-color-light: rgba(99, 102, 241, 0.15); /* Fondo del elemento activo en el menú */
-  --button-bg: #4b5563;
-  --button-hover-bg: #6b7280;
-}
+/* Dashboard.css - Estilos mejorados para el panel de control */
 
-/* Estilos para el contenedor principal del Dashboard */
+/* Usamos las variables del sistema de diseño global */
 .dashboard-container {
   display: grid;
-  grid-template-rows: auto 1fr; /* Fila para el header, el resto para el contenido */
-  height: 100vh;
+  grid-template-rows: auto auto 1fr auto; /* Header, Stats, Content, Footer */
+  min-height: 100vh;
   background-color: var(--background-dark);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  overflow: hidden; /* Evita el scroll en el contenedor principal */
+  font-family: var(--font-family-sans);
+  overflow: hidden;
+  transition: var(--transition-normal);
 }
 
 /* Estilos para la pantalla de carga */
 .loading-fullscreen {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  font-size: 1.5rem;
-  color: var(--secondary-text);
+  font-size: var(--font-size-lg);
+  color: var(--text-secondary-color);
   background-color: var(--background-dark);
+  gap: var(--spacing-4);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: var(--primary-color);
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 /* Estilos para la cabecera del Dashboard */
@@ -43,81 +42,261 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: var(--background-medium);
-  border-bottom: 1px solid var(--border-color-light);
-  box-shadow: 0 2px 4px var(--shadow-light);
-  z-index: 10; /* Asegura que la cabecera esté por encima del contenido */
+  padding: var(--spacing-4) var(--spacing-6);
+  background-color: var(--surface-color);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-md);
+  z-index: var(--z-index-sticky);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
 }
 
 .header-title {
-  font-size: 1.8rem;
-  color: var(--primary-text);
+  font-size: var(--font-size-2xl);
+  color: var(--text-primary-color);
   margin: 0;
+  font-weight: 600;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  color: var(--primary-text);
+  gap: var(--spacing-4);
+  color: var(--text-primary-color);
 }
 
-.user-role-tag {
-  background-color: var(--primary-color-light);
-  color: var(--primary-color);
-  padding: 0.25rem 0.75rem;
-  border-radius: 1rem; /* Un radio de borde más estándar */
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-transform: capitalize;
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--spacing-1);
 }
 
-/* Estilos para el contenido principal */
-.dashboard-content {
-  flex-grow: 1;
-  padding: 2rem;
-  overflow-y: auto; /* Permite el scroll solo en el área de contenido */
+.user-role-badge {
+  font-size: var(--font-size-xs);
 }
 
-/* Estilo de "Tarjeta" para envolver el contenido principal */
-.card {
-  background-color: var(--background-medium);
-  border-radius: 8px;
-  padding: 0; /* El padding se manejará en los componentes hijos */
-  box-shadow: 0 4px 12px var(--shadow-medium);
-  border: 1px solid var(--border-color-light);
-  overflow: hidden; /* Para que los bordes redondeados afecten al contenido */
-}
-
-/* Estilos para títulos dentro de las tarjetas */
-.card h2 {
-  color: var(--primary-text);
-}
-
-/* Estilos para botones */
-.button-secondary {
-  padding: 0.6rem 1.2rem;
+/* Botones de iconos */
+.icon-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--border-radius-full);
+  background-color: transparent;
+  color: var(--text-primary-color);
   border: 1px solid var(--border-color);
-  background-color: var(--button-bg);
-  color: var(--primary-text);
-  border-radius: 6px;
   cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: var(--transition-fast);
 }
 
-.button-secondary:hover {
-  background-color: var(--button-hover-bg);
-  border-color: var(--border-color);
+.icon-button:hover {
+  background-color: var(--surface-hover-color);
+  transform: translateY(-2px);
 }
 
-/* Media Query para responsividad en pantallas pequeñas */
-@media (max-width: 768px) {
-  .dashboard-header, .dashboard-content {
-    padding: 1rem;
-  }
+/* Notificaciones */
+.notifications-dropdown {
+  position: relative;
+}
 
-  .header-title { font-size: 1.5rem; }
-  .header-actions { gap: 0.5rem; }
+.notification-button {
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background-color: var(--error-color);
+  color: white;
+  border-radius: var(--border-radius-full);
+  font-size: 10px;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.notifications-panel {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  width: 320px;
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-color);
+  z-index: var(--z-index-dropdown);
+  padding: var(--spacing-4);
+}
+
+.notifications-panel h3 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-4);
+  color: var(--text-primary-color);
+  font-size: var(--font-size-lg);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--spacing-2);
+}
+
+.notifications-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  padding: var(--spacing-3);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-2);
+  position: relative;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-message {
+  margin: 0 0 var(--spacing-1) 0;
+  color: var(--text-primary-color);
+  font-size: var(--font-size-sm);
+}
+
+.notification-time {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary-color);
+}
+
+.unread-indicator {
+  width: 8px;
+  height: 8px;
+  background-color: var(--primary-color);
+  border-radius: var(--border-radius-full);
+}
+
+.no-notifications {
+  text-align: center;
+  color: var(--text-secondary-color);
+  padding: var(--spacing-4);
+}
+
+.view-all-button {
+  display: block;
+  width: 100%;
+  padding: var(--spacing-2);
+  margin-top: var(--spacing-3);
+  background-color: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--primary-color);
+  border-radius: var(--border-radius-md);
+  cursor: pointer;
+  transition: var(--transition-fast);
+  font-size: var(--font-size-sm);
+}
+
+.view-all-button:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* Estadísticas */
+.stats-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--spacing-4);
+  padding: var(--spacing-6);
+  background-color: var(--background-dark);
+}
+
+.stat-card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-4);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition-normal);
+  border: 1px solid var(--border-color);
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-card h3 {
+  margin-top: 0;
+  margin-bottom: var(--spacing-2);
+  color: var(--text-secondary-color);
+  font-size: var(--font-size-base);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: var(--font-size-3xl);
+  font-weight: 700;
+  color: var(--text-primary-color);
+  margin: var(--spacing-2) 0;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: var(--surface-hover-color);
+  border-radius: var(--border-radius-full);
+  margin-top: var(--spacing-2);
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--success-color);
+  border-radius: var(--border-radius-full);
+  transition: width 0.5s ease-in-out;
+}
+
+/* Contenido principal */
+.dashboard-content {
+  padding: var(--spacing-6);
+  overflow-y: auto;
+}
+
+.dashboard-card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border-color);
+  transition: var(--transition-normal);
+}
+
+/* Footer */
+.dashboard-footer {
+  background-color: var(--surface-color);
+  padding: var(--spacing-4) var(--spacing-6);
+  text-align: center;
+  border-top: 1px solid var(--border-color);
+  color: var(--text-secondary-color);
+  font-size: var(--font-size-sm);
+}
+
+/* Botones */
+.logout-button {
+  padding: var(--spacing-2) var(--spacing-4);
+  font-weight: 500;
 }

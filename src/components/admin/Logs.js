@@ -31,9 +31,11 @@ const Logs = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const logsQuery = query(collection(db, 'adminLogs'), orderBy('timestamp', 'desc'), limit(50));
+    // Cambiamos a la colección 'auditLogs' según las reglas de seguridad
+    const logsQuery = query(collection(db, 'auditLogs'), orderBy('timestamp', 'desc'), limit(100));
     const unsubscribe = onSnapshot(logsQuery, (snapshot) => {
       const logsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log("Logs obtenidos:", logsData.length);
       setLogs(logsData);
       setLoading(false);
     }, (error) => {

@@ -1,36 +1,42 @@
 /* src/design-system.css */
 
 /*
-  Sistema de Diseño "Nexus"
+  Sistema de Diseño "Nexus Pro"
   Paleta de colores, tipografía y estilos globales.
+  Versión mejorada con soporte para tema claro/oscuro y componentes modernos.
 */
 
 :root {
   /* Paleta de Colores Principal */
-  --primary-color: #4A90E2; /* Azul Nexus - para acciones principales, enlaces y elementos activos */
-  --primary-hover-color: #357ABD; /* Azul más oscuro para hover */
-  --secondary-color: #50E3C2; /* Turquesa - para acentos, notificaciones y elementos secundarios */
-
-  /* Paleta de Fondos y Superficies */
-  --background-dark: #1A1D24; /* Fondo principal oscuro */
-  --surface-color: #242833; /* Color para tarjetas, modales y paneles */
-  --surface-hover-color: #2E3340; /* Color para hover en superficies */
-  --border-color: #3A4052; /* Color para bordes y separadores */
-
-  /* Paleta de Texto */
-  --text-primary-color: #F5F7FA; /* Texto principal, muy legible sobre fondos oscuros */
-  --text-secondary-color: #A0AEC0; /* Texto secundario, para metadatos o descripciones */
+  --primary-color: #4361EE; /* Azul Nexus Pro - para acciones principales */
+  --primary-hover-color: #3A56D4; /* Azul más oscuro para hover */
+  --secondary-color: #4CC9F0; /* Turquesa - para acentos y elementos secundarios */
+  --accent-color: #F72585; /* Rosa - para destacados especiales */
+  
+  /* Paleta de Fondos y Superficies - Tema Oscuro (default) */
+  --background-dark: #0F172A; /* Fondo principal oscuro - más profundo */
+  --surface-color: #1E293B; /* Color para tarjetas, modales y paneles */
+  --surface-hover-color: #334155; /* Color para hover en superficies */
+  --border-color: #475569; /* Color para bordes y separadores */
+  --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.15);
+  
+  /* Paleta de Texto - Tema Oscuro */
+  --text-primary-color: #F8FAFC; /* Texto principal, muy legible sobre fondos oscuros */
+  --text-secondary-color: #CBD5E1; /* Texto secundario, para metadatos o descripciones */
   --text-on-primary-color: #FFFFFF; /* Texto sobre botones o fondos de color primario */
+  --text-muted-color: #94A3B8; /* Texto para información menos relevante */
 
   /* Paleta de Estados y Notificaciones */
-  --success-color: #48BB78; /* Verde para éxito */
-  --warning-color: #F6AD55; /* Naranja para advertencias */
-  --error-color: #E53E3E; /* Rojo para errores */
-  --disabled-color: #718096; /* Gris para elementos deshabilitados */
+  --success-color: #10B981; /* Verde para éxito - más vibrante */
+  --warning-color: #F59E0B; /* Naranja para advertencias */
+  --error-color: #EF4444; /* Rojo para errores */
+  --info-color: #3B82F6; /* Azul para información */
+  --disabled-color: #94A3B8; /* Gris para elementos deshabilitados */
 
   /* Tipografía */
   --font-family-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   --font-family-mono: 'Fira Code', 'monospace';
+  --font-family-display: 'Poppins', var(--font-family-sans);
 
   /* Tamaños de Fuente */
   --font-size-xs: 0.75rem;  /* 12px */
@@ -40,24 +46,56 @@
   --font-size-xl: 1.25rem;  /* 20px */
   --font-size-2xl: 1.5rem;   /* 24px */
   --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem;  /* 36px */
 
   /* Espaciado y Radios */
   --spacing-1: 0.25rem;
   --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
   --spacing-4: 1rem;
   --spacing-6: 1.5rem;
   --spacing-8: 2rem;
+  --spacing-12: 3rem;
+  --spacing-16: 4rem;
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
-  --border-radius-lg: 16px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-full: 9999px;
 
   /* Sombras */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);
+  --shadow-outline: 0 0 0 3px rgba(66, 153, 225, 0.5);
 
   /* Transiciones */
   --transition-fast: all 0.15s ease-in-out;
   --transition-normal: all 0.3s ease-in-out;
+  --transition-slow: all 0.5s ease-in-out;
+  
+  /* Z-index */
+  --z-index-dropdown: 1000;
+  --z-index-sticky: 1020;
+  --z-index-fixed: 1030;
+  --z-index-modal-backdrop: 1040;
+  --z-index-modal: 1050;
+  --z-index-popover: 1060;
+  --z-index-tooltip: 1070;
+}
+
+/* Tema Claro - Se aplicará cuando se añada la clase 'light-theme' al elemento html o body */
+.light-theme {
+  --background-dark: #F8FAFC;
+  --surface-color: #FFFFFF;
+  --surface-hover-color: #F1F5F9;
+  --border-color: #E2E8F0;
+  --text-primary-color: #0F172A;
+  --text-secondary-color: #334155;
+  --text-muted-color: #64748B;
+  --card-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* Estilos Globales */
@@ -68,23 +106,174 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--background-dark);
   color: var(--text-primary-color);
+  line-height: 1.5;
+  transition: var(--transition-normal);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family-display);
+  margin-top: 0;
+  line-height: 1.2;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: var(--font-size-3xl);
+}
+
+h2 {
+  font-size: var(--font-size-2xl);
+}
+
+h3 {
+  font-size: var(--font-size-xl);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+a:hover {
+  color: var(--primary-hover-color);
+  text-decoration: underline;
+}
+
+button, .button {
+  cursor: pointer;
+  font-family: var(--font-family-sans);
+  font-weight: 500;
+  border-radius: var(--border-radius-md);
+  transition: var(--transition-fast);
+  padding: var(--spacing-2) var(--spacing-4);
+  border: none;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+}
+
+.button-primary {
+  background-color: var(--primary-color);
+  color: var(--text-on-primary-color);
+}
+
+.button-primary:hover {
+  background-color: var(--primary-hover-color);
+  box-shadow: var(--shadow-md);
+}
+
+.button-secondary {
+  background-color: transparent;
+  color: var(--text-primary-color);
+  border: 1px solid var(--border-color);
+}
+
+.button-secondary:hover {
+  background-color: var(--surface-hover-color);
+  border-color: var(--text-secondary-color);
+}
+
+.button-accent {
+  background-color: var(--accent-color);
+  color: var(--text-on-primary-color);
+}
+
+.button-accent:hover {
+  filter: brightness(1.1);
+  box-shadow: var(--shadow-md);
 }
 
 code {
   font-family: var(--font-family-mono);
+  background-color: var(--surface-hover-color);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--font-size-sm);
+}
+
+/* Estilos para tarjetas */
+.card {
+  background-color: var(--surface-color);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  box-shadow: var(--card-shadow);
+  transition: var(--transition-normal);
+  border: 1px solid var(--border-color);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+/* Estilos para inputs */
+input, select, textarea {
+  background-color: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-2) var(--spacing-3);
+  color: var(--text-primary-color);
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  transition: var(--transition-fast);
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+/* Estilos para badges y etiquetas */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-primary {
+  background-color: rgba(67, 97, 238, 0.15);
+  color: var(--primary-color);
+}
+
+.badge-success {
+  background-color: rgba(16, 185, 129, 0.15);
+  color: var(--success-color);
+}
+
+.badge-warning {
+  background-color: rgba(245, 158, 11, 0.15);
+  color: var(--warning-color);
+}
+
+.badge-error {
+  background-color: rgba(239, 68, 68, 0.15);
+  color: var(--error-color);
 }
 
 /* Estilos base para scrollbars para un look más integrado */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
+
 ::-webkit-scrollbar-track {
   background: var(--background-dark);
 }
+
 ::-webkit-scrollbar-thumb {
   background: var(--border-color);
-  border-radius: var(--border-radius-md);
+  border-radius: var(--border-radius-full);
 }
+
 ::-webkit-scrollbar-thumb:hover {
   background: var(--text-secondary-color);
 }
