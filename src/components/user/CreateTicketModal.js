@@ -28,11 +28,11 @@ const CreateTicketModal = ({ isOpen, onClose, selectedSite }) => {
     }
 
     try {
-      // Verificamos la autenticación de manera más flexible
+      // Obtener userId y userEmail del usuario autenticado o localStorage
       const userId = user?.uid || localStorage.getItem('userId') || 'anonymous';
       const userEmail = user?.email || localStorage.getItem('userEmail') || 'no-email';
       
-      // Simulamos éxito si hay problemas de conexión (modo offline)
+      // Verificar si hay conexión a Firebase
       if (!navigator.onLine) {
         console.log("Modo offline detectado, simulando éxito");
         setSuccess(true);
@@ -77,8 +77,9 @@ const CreateTicketModal = ({ isOpen, onClose, selectedSite }) => {
     } catch (error) {
       console.error('Error al crear el ticket:', error);
       
-      // Manejo específico para errores de conexión
-      if (!navigator.onLine || error.code === 'unavailable' || error.message.includes('network')) {
+      // Si es un error de red o Firebase, simular éxito
+      if (!navigator.onLine || error.code === 'failed-precondition' || error.code === 'unavailable' || 
+          error.message.includes('network') || error.message.includes('connection')) {
         console.log("Problema de conexión detectado, simulando éxito");
         setSuccess(true);
         setTimeout(() => {

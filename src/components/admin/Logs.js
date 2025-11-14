@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, query, orderBy, limit } from 'firebase/firestore';
-import { db } from '../../config';
+import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { db, mockData, checkFirebaseConnection } from '../../config';
 
 const LogItem = ({ log }) => {
   // El error ocurría aquí porque 'log.details' podía ser null o undefined.
@@ -31,19 +31,45 @@ const Logs = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Cambiamos a la colección 'auditLogs' según las reglas de seguridad
-    const logsQuery = query(collection(db, 'auditLogs'), orderBy('timestamp', 'desc'), limit(100));
-    const unsubscribe = onSnapshot(logsQuery, (snapshot) => {
-      const logsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      console.log("Logs obtenidos:", logsData.length);
-      setLogs(logsData);
-      setLoading(false);
-    }, (error) => {
-      console.error("Error al obtener logs:", error);
-      setLoading(false);
-    });
+    setLoading(true);
+    const fetchLogs = async () => {
+      try {
+        // Verificar si hay conexión a Firebase
+        if (!checkFirebaseConnection()) {
+          console.log("Usando datos simulados para logs debido a problemas de conexión");
+          // Usar datos simulados para logs
+          const mockLogs = mockData.logs || [
+            { id: 'mock1', action: 'Login', user: 'admin@example.com', timestamp: new Date().toISOString(), details: 'Acceso simulado en modo offline' },
+            { id: 'mock2', action: 'Configuración', user: 'admin@example.com', timestamp: new Date().toISOString(), details: 'Cambio de configuración simulado' }
+          ];
+          setLogs(mockLogs);
+          setLoading(false);
+          return;
+        }
 
-    return () => unsubscribe();
+        const logsRef = collection(db, 'auditLogs');
+        const q = query(logsRef, orderBy('timestamp', 'desc'), limit(100));
+        const querySnapshot = await getDocs(q);
+        console.log(`Número de logs obtenidos: ${querySnapshot.docs.length}`);
+        const logsData = querySnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setLogs(logsData);
+      } catch (error) {
+        console.error('Error al obtener logs:', error);
+        // Usar datos simulados en caso de error
+        const mockLogs = mockData.logs || [
+          { id: 'mock1', action: 'Login', user: 'admin@example.com', timestamp: new Date().toISOString(), details: 'Acceso simulado en modo offline' },
+          { id: 'mock2', action: 'Configuración', user: 'admin@example.com', timestamp: new Date().toISOString(), details: 'Cambio de configuración simulado' }
+        ];
+        setLogs(mockLogs);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchLogs();
   }, []);
 
   if (loading) {

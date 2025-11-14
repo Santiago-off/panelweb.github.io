@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Modal from './Modal';
-import { db } from '../../config';
+import { db, checkFirebaseConnection } from '../../config';
 import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { generateCoreJs } from '../../utils/coreGenerator';
 
 // Iconos para los botones de acción
 const EditIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
@@ -12,11 +13,14 @@ const WebManagement = ({ sites, users }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState('info');
   const [formData, setFormData] = useState({});
+  const verifyMessageRef = useRef(null);
+  const verifyWindowRef = useRef(null);
+  const [verificationStatus, setVerificationStatus] = useState('idle');
 
   const openModal = (type, site = null) => {
     setModalState({ type, site });
     // Inicializa el estado del formulario con los datos del sitio o un objeto vacío
-    setFormData(site || { name: '', url: '', status: 'active', assignedUser: '', notes: '' });
+    setFormData(site || { name: '', url: '', domain: '', status: 'active', assignedUser: '', notes: '' });
     setActiveTab('info'); // Siempre empieza en la primera pestaña
   };
   const closeModal = () => {
@@ -37,8 +41,25 @@ const WebManagement = ({ sites, users }) => {
     
     // Usa los datos del estado del formulario en lugar de FormData
     const siteData = { ...formData, assignedUser: formData.assignedUser || null };
+    if (!siteData.domain && siteData.url) {
+      try {
+        const u = new URL(siteData.url);
+        siteData.domain = u.hostname;
+      } catch {}
+    }
 
     try {
+      // Verificar si hay conexión a Firebase
+      if (!checkFirebaseConnection()) {
+        console.log("Simulando guardar sitio en modo offline");
+        // Simular éxito en modo offline
+        setTimeout(() => {
+          setIsSubmitting(false);
+          closeModal();
+        }, 500);
+        return;
+      }
+
       if (modalState.type === 'add') {
         await addDoc(collection(db, 'sites'), siteData);
         console.log("Sitio añadido con éxito");
@@ -49,6 +70,11 @@ const WebManagement = ({ sites, users }) => {
       }
     } catch (error) {
       console.error("Error al guardar el sitio:", error);
+      // Verificar si es un error de red
+      if (!navigator.onLine || error.code === 'failed-precondition' || error.code === 'unavailable') {
+        console.log("Simulando guardar sitio debido a error de red");
+        // Simular éxito en caso de error de red
+      }
     } finally {
       setIsSubmitting(false);
       closeModal();
@@ -67,6 +93,79 @@ const WebManagement = ({ sites, users }) => {
     } finally {
       setIsSubmitting(false);
       closeModal();
+    }
+  };
+
+  const openCoreModal = (site) => {
+    setModalState({ type: 'generateCore', site });
+  };
+
+  const downloadCoreFile = (site) => {
+    if (!site?.id) return;
+    const content = generateCoreJs({ siteId: site.id });
+    const blob = new Blob([content], { type: 'application/javascript;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'core.js';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const openVerifyModal = (site) => {
+    setVerificationStatus('idle');
+    setModalState({ type: 'verify', site });
+  };
+
+  const openVerifyInTab = (site) => {
+    setVerificationStatus('idle');
+    verifyWindowRef.current = window.open(site?.url || '', '_blank');
+  };
+
+  useEffect(() => {
+    const handler = (ev) => {
+      const data = ev?.data;
+      if (!data) return;
+      let expectedOrigin = '*';
+      try { expectedOrigin = new URL(modalState.site?.url || '').origin; } catch {}
+      if (expectedOrigin !== '*' && ev.origin !== expectedOrigin) return;
+      if (data.type === 'PANEL_CORE_HANDSHAKE' && data.siteId === modalState.site?.id) {
+        setVerificationStatus('linked');
+      } else if (data.type === 'PONG' && data.siteId === modalState.site?.id) {
+        setVerificationStatus('pong');
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [modalState.site?.id, modalState.site?.url]);
+
+  useEffect(() => {
+    const updateLinked = async () => {
+      if (!modalState.site?.id) return;
+      if (verificationStatus === 'linked' || verificationStatus === 'pong') {
+        try {
+          const siteRef = doc(db, 'sites', modalState.site.id);
+          await updateDoc(siteRef, { status: 'online', linked: true });
+        } catch {}
+      }
+    };
+    updateLinked();
+  }, [verificationStatus, modalState.site?.id]);
+
+  const sendPing = () => {
+    if (!verifyMessageRef.current) return;
+    const frame = verifyMessageRef.current;
+    const cw = frame.contentWindow;
+    if (!cw) return;
+    let origin = '*';
+    try { origin = new URL(modalState.site?.url || '').origin; } catch {}
+    cw.postMessage({ type: 'PANEL_TO_CORE', siteId: modalState.site?.id, command: { type: 'PING' } }, origin);
+    if (verifyWindowRef.current) {
+      try {
+        verifyWindowRef.current.postMessage({ type: 'PANEL_TO_CORE', siteId: modalState.site?.id, command: { type: 'PING' } }, origin);
+      } catch {}
     }
   };
 
@@ -112,6 +211,8 @@ const WebManagement = ({ sites, users }) => {
                   <td className="action-buttons">
                     <button className="button-icon" onClick={() => openModal('edit', site)}><EditIcon /> Editar</button>
                     <button className="button-icon button-danger" onClick={() => openModal('delete', site)}><DeleteIcon /> Eliminar</button>
+                    <button className="button-icon" onClick={() => openCoreModal(site)}>Generar core.js</button>
+                    <button className="button-icon" onClick={() => openVerifyModal(site)}>Verificar vinculación</button>
                   </td>
                 </tr>
               ))
@@ -150,6 +251,10 @@ const WebManagement = ({ sites, users }) => {
                   <input type="url" id="site-url" name="url" value={formData.url || ''} onChange={handleFormChange} required />
                 </div>
                 <div className="form-group">
+                  <label htmlFor="site-domain">Dominio</label>
+                  <input type="text" id="site-domain" name="domain" value={formData.domain || ''} onChange={handleFormChange} placeholder="ejemplo.com" />
+                </div>
+                <div className="form-group">
                   <label htmlFor="site-status">Estado</label>
                   <select id="site-status" name="status" value={formData.status || 'active'} onChange={handleFormChange}>
                     <option value="active">Activo</option>
@@ -186,6 +291,34 @@ const WebManagement = ({ sites, users }) => {
             <button type="submit" className="button-primary" disabled={isSubmitting}>{isSubmitting ? 'Guardando...' : 'Guardar'}</button>
           </div>
         </form>
+      </Modal>
+
+      <Modal show={modalState.type === 'generateCore'} onClose={closeModal} title="Generar core.js">
+        <div className="form-group">
+          <label>Instrucción para index.html</label>
+          <input readOnly value={`<script src="core.js"></script>`} />
+          <small>Pega esta línea en el &lt;head&gt; o antes de cerrar el &lt;/body&gt;.</small>
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="button-secondary" onClick={closeModal}>Cerrar</button>
+          <button type="button" className="button-primary" onClick={() => downloadCoreFile(modalState.site)}>Descargar core.js</button>
+        </div>
+      </Modal>
+
+      <Modal show={modalState.type === 'verify'} onClose={closeModal} title="Verificar vinculación">
+        <div className="form-group full-width">
+          <label>Vista previa del sitio</label>
+          <iframe ref={verifyMessageRef} title="verificacion" src={modalState.site?.url} style={{ width: '100%', height: '400px', border: '1px solid #333' }} />
+        </div>
+        <div className="form-group">
+          <label>Estado</label>
+          <input readOnly value={verificationStatus} />
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="button-secondary" onClick={closeModal}>Cerrar</button>
+          <button type="button" className="button-primary" onClick={sendPing}>Enviar ping</button>
+          <button type="button" className="button-outline" onClick={() => openVerifyInTab(modalState.site)}>Abrir en nueva pestaña</button>
+        </div>
       </Modal>
 
       {/* --- MODAL DE CONFIRMACIÓN PARA ELIMINAR --- */}

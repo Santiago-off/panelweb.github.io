@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { collection, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion, serverTimestamp } from 'firebase/firestore';
-import { db } from '../../config';
+import { collection, onSnapshot, query, orderBy, doc, updateDoc, arrayUnion } from 'firebase/firestore';
+import { db, mockData, checkFirebaseConnection } from '../../config';
 import Modal from './Modal';
 import './TicketManagement.css';
 
@@ -15,13 +15,23 @@ const TicketManagement = ({ users }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
-    const ticketsQuery = query(collection(db, 'tickets'), orderBy('lastUpdate', 'desc'));
+    // Verificar si hay conexión a Firebase
+    if (!checkFirebaseConnection()) {
+      console.log("Usando datos simulados para tickets debido a problemas de conexión");
+      setTickets(mockData.tickets || []);
+      setLoading(false);
+      return () => {};
+    }
+
+    const ticketsQuery = query(collection(db, 'tickets'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(ticketsQuery, (snapshot) => {
       const ticketsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setTickets(ticketsData);
       setLoading(false);
     }, (error) => {
       console.error("Error al obtener tickets:", error);
+      // Usar datos simulados en caso de error
+      setTickets(mockData.tickets || []);
       setLoading(false);
     });
 
@@ -38,8 +48,9 @@ const TicketManagement = ({ users }) => {
   };
 
   const getUserName = (userId) => {
+    if (!userId) return 'Usuario Anónimo';
     const user = users.find(u => u.id === userId);
-    return user ? user.displayName : 'Usuario Desconocido';
+    return user ? (user.displayName || user.email || 'Usuario ' + userId.substring(0, 5)) : 'Usuario ' + userId.substring(0, 5);
   };
 
   const handleReplySubmit = async (e) => {
@@ -52,13 +63,13 @@ const TicketManagement = ({ users }) => {
     const newReply = {
       message: reply,
       sender: 'admin', // O podrías usar el ID del admin actual
-      timestamp: serverTimestamp(),
+      timestamp: new Date().toISOString(),
     };
 
     try {
       await updateDoc(ticketRef, {
         replies: arrayUnion(newReply),
-        lastUpdate: serverTimestamp(),
+        lastUpdate: new Date().toISOString(),
         status: 'in-progress', // Cambia el estado a "en progreso"
       });
       setReply(''); // Limpia el campo de respuesta

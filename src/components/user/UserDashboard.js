@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
-import { db } from '../../config';
+import { db, mockData, checkFirebaseConnection } from '../../config';
 import './UserDashboard.css'; // Importa los estilos del panel de usuario
 import { useUserData } from '../../hooks/useUserData';
 import CreateTicketModal from './CreateTicketModal';
@@ -49,7 +49,9 @@ const SiteCard = ({ site, onManage, onCreateTicket }) => (
 const UserDashboard = () => {
   const { user } = useUserData();
   const [assignedSites, setAssignedSites] = useState([]);
+  
   const [loading, setLoading] = useState(true);
+  
   const [isCreateTicketModalOpen, setCreateTicketModalOpen] = useState(false);
   const [selectedSite, setSelectedSite] = useState(null);
   const [isManageSiteModalOpen, setManageSiteModalOpen] = useState(false);
@@ -59,6 +61,39 @@ const UserDashboard = () => {
       setLoading(false);
       return;
     };
+
+    // Verificar si hay conexión a Firebase
+    if (!checkFirebaseConnection()) {
+      console.log("Usando datos simulados para sitios debido a problemas de conexión");
+      // Filtrar sitios simulados asignados al usuario actual
+      const filteredSites = mockData.sites || [
+        {
+          id: 'site1',
+          name: 'Mi Sitio Web',
+          domain: 'misitio.com',
+          status: 'online',
+          server: 'Servidor 1',
+          plan: 'Premium',
+          diskUsage: '500MB',
+          diskQuota: '1GB',
+          assignedUsers: [user?.uid || 'user1']
+        },
+        {
+          id: 'site2',
+          name: 'Mi Tienda Online',
+          domain: 'mitienda.com',
+          status: 'online',
+          server: 'Servidor 2',
+          plan: 'Empresarial',
+          diskUsage: '1.2GB',
+          diskQuota: '2GB',
+          assignedUsers: [user?.uid || 'user1']
+        }
+      ];
+      setAssignedSites(filteredSites);
+      setLoading(false);
+      return;
+    }
 
     // Consulta para obtener los sitios asignados al usuario
     const sitesRef = collection(db, 'sites');

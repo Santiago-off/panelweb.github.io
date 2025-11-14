@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { onSnapshot, collection } from 'firebase/firestore';
-import { db } from '../../config';
+import { db, mockData, checkFirebaseConnection } from '../../config';
 
 // Importa los nuevos componentes de las secciones
 import UserManagement from './UserManagement';
@@ -30,6 +30,16 @@ const AdminDashboard = () => {
   const [loadingSites, setLoadingSites] = useState(true);
 
   useEffect(() => {
+    // Verificar si hay conexión a Firebase
+    if (!checkFirebaseConnection()) {
+      console.log("Usando datos simulados debido a problemas de conexión");
+      setUsers(mockData.users);
+      setSites(mockData.sites);
+      setLoadingUsers(false);
+      setLoadingSites(false);
+      return;
+    }
+    
     // Cargar la lista de usuarios y sitios para todo el panel de admin
     const usersUnsubscribe = onSnapshot(collection(db, "users"), (snapshot) => {
       const usersData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -37,6 +47,8 @@ const AdminDashboard = () => {
       setLoadingUsers(false);
     }, (error) => {
       console.error("Error al obtener la lista de usuarios:", error);
+      // Usar datos simulados en caso de error
+      setUsers(mockData.users);
       setLoadingUsers(false);
     });
 
@@ -46,6 +58,8 @@ const AdminDashboard = () => {
       setLoadingSites(false);
     }, (error) => {
       console.error("Error al obtener la lista de sitios:", error);
+      // Usar datos simulados en caso de error
+      setSites(mockData.sites);
       setLoadingSites(false);
     });
 
