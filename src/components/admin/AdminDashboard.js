@@ -9,6 +9,7 @@ import TicketManagement from './TicketManagement';
 import Metrics from './Metrics';
 import Logs from './Logs';
 import Config from './Config';
+import UserDashboard from '../user/UserDashboard';
 
 // Importa los estilos específicos para el AdminDashboard
 import './AdminDashboard.css';
@@ -79,6 +80,8 @@ const AdminDashboard = () => {
         return <UserManagement users={users} sites={sites} />;
       case 'webs':
         return <WebManagement sites={sites} users={users} />;
+      case 'miswebs':
+        return <UserDashboard />;
       case 'tickets':
         return <TicketManagement users={users} />;
       case 'metricas':
@@ -95,6 +98,7 @@ const AdminDashboard = () => {
   const sections = [
     { id: 'usuarios', label: 'Usuarios', icon: <UsersIcon /> },
     { id: 'webs', label: 'Webs', icon: <WebIcon /> },
+    { id: 'miswebs', label: 'Mis páginas', icon: <WebIcon /> },
     { id: 'tickets', label: 'Tickets', icon: <TicketIcon /> },
     { id: 'metricas', label: 'Métricas', icon: <MetricsIcon /> },
     { id: 'logs', label: 'Logs', icon: <LogsIcon /> },
