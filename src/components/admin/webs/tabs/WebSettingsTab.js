@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { doc, updateDoc } from 'firebase/firestore';
+import { doc, updateDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../../../config';
 import { logAdminAction } from '../../../../utils/logs';
 
@@ -16,6 +16,7 @@ const WebSettingsTab = ({ web }) => {
       const webRef = doc(db, 'sites', web.id);
       try {
         await updateDoc(webRef, { status: newStatus });
+        await setDoc(doc(db, 'publicSites', web.id), { status: newStatus }, { merge: true });
         await logAdminAction(isMaintenance ? 'SITE_MAINTENANCE_MODE_DEACTIVATED' : 'SITE_MAINTENANCE_MODE_ACTIVATED', { siteId: web.id });
         alert(`Modo mantenimiento ${actionText.slice(0, -1)}do con éxito.`);
         // No cerramos el modal para que el admin vea el cambio.

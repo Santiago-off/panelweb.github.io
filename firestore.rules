@@ -1,0 +1,65 @@
+rules_version = '2'
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isAuthenticated() { return request.auth != null; }
+    function isAdmin() {
+      return isAuthenticated() && (
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin' ||
+        (exists(/databases/$(database)/documents/panelConfig/main) &&
+          get(/databases/$(database)/documents/panelConfig/main).data.admins != null &&
+          request.auth.uid in get(/databases/$(database)/documents/panelConfig/main).data.admins)
+      );
+    }
+    function isSelf(uid) { return isAuthenticated() && request.auth.uid == uid; }
+    function isValidStatus(s) { return s in ['online','maintenance','disabled','active']; }
+    function hasValidStatus() { return request.resource.data.status == null || isValidStatus(request.resource.data.status); }
+    function canUserToggleStatus() {
+      return request.resource.data.status != null &&
+        request.resource.data.name == resource.data.name &&
+        request.resource.data.url == resource.data.url &&
+        request.resource.data.domain == resource.data.domain &&
+        request.resource.data.notes == resource.data.notes &&
+        request.resource.data.assignedUsers == resource.data.assignedUsers;
+    }
+
+    match /users/{userId} {
+      allow read: if isSelf(userId) || isAdmin();
+      // Permite bootstrap: el propio usuario puede crear su documento con rol 'usuario'
+      allow create: if isAdmin() || (isSelf(userId) && (request.resource.data.role == null || request.resource.data.role == 'usuario'));
+      // El usuario solo puede actualizar su documento si no cambia role ni status
+      allow update: if isAdmin() || (isSelf(userId) && request.resource.data.role == resource.data.role && request.resource.data.status == resource.data.status);
+      allow delete: if isAdmin();
+    }
+
+    match /sites/{siteId} {
+      allow read: if isAdmin() || (isAuthenticated() && ((resource.data.assignedUsers != null && request.auth.uid in resource.data.assignedUsers) || resource.data.assignedUser == request.auth.uid));
+      allow create: if isAdmin() && hasValidStatus();
+      allow update: if isAdmin() && hasValidStatus() || ((isAuthenticated() && ((resource.data.assignedUsers != null && request.auth.uid in resource.data.assignedUsers) || resource.data.assignedUser == request.auth.uid)) && hasValidStatus() && canUserToggleStatus());
+      allow delete: if isAdmin();
+    }
+
+    match /publicSites/{siteId} {
+      allow read: if true;
+      allow create, update: if isAdmin() || (isAuthenticated() && ((get(/databases/$(database)/documents/sites/$(siteId)).data.assignedUsers != null && request.auth.uid in get(/databases/$(database)/documents/sites/$(siteId)).data.assignedUsers) || get(/databases/$(database)/documents/sites/$(siteId)).data.assignedUser == request.auth.uid));
+      allow delete: if isAdmin();
+    }
+
+    match /tickets/{ticketId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.createdBy == request.auth.uid);
+      allow create: if isAuthenticated();
+      allow update: if isAdmin() || (isAuthenticated() && resource.data.createdBy == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    match /auditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    match /panelConfig/{docId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
+

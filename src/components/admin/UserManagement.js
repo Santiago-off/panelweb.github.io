@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import Modal from './Modal'; // Importa el nuevo componente Modal
-import { doc, updateDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+import Modal from './Modal';
+import { doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { db } from '../../config';
+import AddUserModal from './users/AddUserModal';
 
 // Iconos para los botones de acción
 const EditIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>;
@@ -52,42 +53,8 @@ const UserManagement = ({ users, sites }) => {
     }
   };
 
-  // --- Lógica para los formularios (a implementar) ---
-  const handleAddUser = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    // Usa los datos del estado del formulario
-    const newUser = {
-      email: formData.email,
-      password: formData.password,
-      displayName: formData.displayName,
-      role: formData.role,
-    };
-
-    try {
-      const functions = getFunctions();
-      const createUser = httpsCallable(functions, 'createUser');
-      const result = await createUser(newUser);
-      const uid = result.data.uid;
-
-      // Ahora, crea el documento en Firestore para este nuevo usuario
-      const userDocRef = doc(db, 'users', uid);
-      await setDoc(userDocRef, {
-        displayName: newUser.displayName,
-        email: newUser.email,
-        role: newUser.role,
-        status: 'active',
-        accessStatus: 'active',
-        createdAt: serverTimestamp(),
-      });
-      console.log("Usuario creado con éxito en Auth y Firestore.");
-    } catch (error) {
-      console.error("Error al crear el usuario:", error);
-    } finally {
-      setIsSubmitting(false);
-      closeModal();
-    }
-  };
+  // La creación de usuarios de Auth requiere Cloud Functions.
+  // En Netlify (sin funciones) usamos el modal AddUserModal para crear solo el perfil en Firestore con UID existente.
 
   const handleEditUser = async (e) => {
     e.preventDefault();
@@ -128,10 +95,15 @@ const UserManagement = ({ users, sites }) => {
     if (!modalState.user) return;
     setIsSubmitting(true);
     try {
-      const functions = getFunctions();
-      const deleteUser = httpsCallable(functions, 'deleteUser'); // Llama a la Cloud Function
-      await deleteUser({ uid: modalState.user.id });
-      console.log("Usuario eliminado con éxito");
+      // Elimina el perfil en Firestore
+      await deleteDoc(doc(db, 'users', modalState.user.id));
+      // Si existe Cloud Function para borrar en Auth, intenta llamarla
+      try {
+        const functions = getFunctions();
+        const deleteUser = httpsCallable(functions, 'deleteUser');
+        await deleteUser({ uid: modalState.user.id });
+      } catch {}
+      console.log("Perfil de usuario eliminado en Firestore");
     } catch (error) {
       console.error("Error al eliminar el usuario:", error);
     } finally {
@@ -182,46 +154,8 @@ const UserManagement = ({ users, sites }) => {
         </table>
       </div>
 
-      {/* --- MODAL PARA AÑADIR USUARIO --- */}
-      <Modal show={modalState.type === 'add'} onClose={closeModal} title="Añadir Nuevo Usuario">
-        <form className="modal-form" onSubmit={handleAddUser} noValidate>
-          <fieldset>
-            <legend>Credenciales de Acceso</legend>
-            <div className="form-group">
-              <label htmlFor="add-email">Correo Electrónico</label>
-              <input type="email" id="add-email" name="email" value={formData.email || ''} onChange={handleFormChange} required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="add-password">Contraseña</label>
-              <div className="password-input-wrapper">
-                <input type={showPassword ? 'text' : 'password'} id="add-password" name="password" value={formData.password || ''} onChange={handleFormChange} required />
-                <button type="button" className="password-toggle-button" onClick={() => setShowPassword(!showPassword)}>
-                  {showPassword ? 'Ocultar' : 'Mostrar'}
-                </button>
-              </div>
-            </div>
-          </fieldset>
-          <fieldset>
-            <legend>Información y Permisos</legend>
-            <div className="form-group">
-              <label htmlFor="add-displayName">Nombre Completo</label>
-              <input type="text" id="add-displayName" name="displayName" value={formData.displayName || ''} onChange={handleFormChange} required />
-            </div>
-            <div className="form-group">
-              <label htmlFor="add-role">Rol Inicial</label>
-              <select id="add-role" name="role" value={formData.role || 'usuario'} onChange={handleFormChange}>
-                <option value="usuario">Usuario</option>
-                <option value="staff">Staff</option>
-                <option value="admin">Admin</option>
-              </select>
-            </div>
-          </fieldset>
-          <div className="modal-footer">
-            <button type="button" className="button-secondary" onClick={closeModal} disabled={isSubmitting}>Cancelar</button>
-            <button type="submit" className="button-primary" disabled={isSubmitting}>{isSubmitting ? 'Creando...' : 'Crear Usuario'}</button>
-          </div>
-        </form>
-      </Modal>
+      {/* --- MODAL PARA AÑADIR USUARIO (solo Firestore UID existente) --- */}
+      {modalState.type === 'add' && <AddUserModal onClose={closeModal} />}
 
       {/* --- MODAL PARA EDITAR USUARIO --- */}
       <Modal show={modalState.type === 'edit'} onClose={closeModal} title="Editar Usuario">

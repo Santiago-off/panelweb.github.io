@@ -42,18 +42,23 @@ function Login() {
         localStorage.removeItem('userEmail');
       }
 
-      // Registrar el inicio de sesión en los logs de auditoría
-      await addDoc(collection(db, 'auditLogs'), {
-        timestamp: serverTimestamp(),
-        actorId: user.uid,
-        actorEmail: user.email,
-        action: 'USER_LOGIN',
-      });
+      // Registrar el inicio de sesión en los logs de auditoría (no bloquear el login si falla)
+      try {
+        await addDoc(collection(db, 'auditLogs'), {
+          timestamp: serverTimestamp(),
+          actorId: user.uid,
+          actorEmail: user.email,
+          action: 'USER_LOGIN',
+        });
+      } catch (logErr) {
+        console.warn('No se pudo registrar el log de login:', logErr?.code || logErr?.message);
+      }
 
       navigate('/'); // Redirect to dashboard on successful login
     } catch (err) {
-      setError('Error al iniciar sesión. Verifica tus credenciales.');
       console.error(err);
+      const isAuthError = (err?.code || '').startsWith('auth/');
+      setError(isAuthError ? 'Credenciales inválidas. Verifica tu email y contraseña.' : 'Ocurrió un error al iniciar sesión.');
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Modal from './Modal';
 import { db, checkFirebaseConnection } from '../../config';
-import { collection, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
+import { collection, addDoc, updateDoc, deleteDoc, doc, setDoc } from 'firebase/firestore';
 import { generateCoreJs } from '../../utils/coreGenerator';
 
 // Iconos para los botones de acción
@@ -19,9 +19,14 @@ const WebManagement = ({ sites, users }) => {
 
   const openModal = (type, site = null) => {
     setModalState({ type, site });
-    // Inicializa el estado del formulario con los datos del sitio o un objeto vacío
-    setFormData(site || { name: '', url: '', domain: '', status: 'active', assignedUser: '', notes: '' });
-    setActiveTab('info'); // Siempre empieza en la primera pestaña
+    const initial = site
+      ? { 
+          ...site,
+          assignedUser: site.assignedUser || (Array.isArray(site.assignedUsers) ? site.assignedUsers[0] : ''),
+        }
+      : { name: '', url: '', domain: '', status: 'active', assignedUser: '', notes: '' };
+    setFormData(initial);
+    setActiveTab('info');
   };
   const closeModal = () => {
     if (!isSubmitting) {
@@ -40,7 +45,10 @@ const WebManagement = ({ sites, users }) => {
     setIsSubmitting(true);
     
     // Usa los datos del estado del formulario en lugar de FormData
-    const siteData = { ...formData, assignedUser: formData.assignedUser || null };
+    const siteData = { ...formData };
+    const assignedUserId = formData.assignedUser || '';
+    delete siteData.assignedUser;
+    siteData.assignedUsers = assignedUserId ? [assignedUserId] : Array.isArray(siteData.assignedUsers) ? siteData.assignedUsers : [];
     if (!siteData.domain && siteData.url) {
       try {
         const u = new URL(siteData.url);
@@ -148,6 +156,7 @@ const WebManagement = ({ sites, users }) => {
         try {
           const siteRef = doc(db, 'sites', modalState.site.id);
           await updateDoc(siteRef, { status: 'online', linked: true });
+          await setDoc(doc(db, 'publicSites', modalState.site.id), { status: 'online' }, { merge: true });
         } catch {}
       }
     };
@@ -170,9 +179,10 @@ const WebManagement = ({ sites, users }) => {
   };
 
   // Función para encontrar el nombre del usuario asignado a un sitio
-  const getAssignedUserName = (userId) => {
-    if (!userId) return <span className="unassigned-user">No asignado</span>;
-    const user = users.find(u => u.id === userId);
+  const getAssignedUserName = (userIdOrArray) => {
+    const resolvedId = Array.isArray(userIdOrArray) ? userIdOrArray[0] : userIdOrArray;
+    if (!resolvedId) return <span className="unassigned-user">No asignado</span>;
+    const user = users.find(u => u.id === resolvedId);
     return user ? user.displayName : 'Usuario no encontrado';
   };
 
@@ -206,7 +216,7 @@ const WebManagement = ({ sites, users }) => {
                 <tr key={site.id}>
                   <td>{site.name}</td>
                   <td><a href={site.url} target="_blank" rel="noopener noreferrer">{site.url}</a></td>
-                  <td>{getAssignedUserName(site.assignedUser)}</td>
+                  <td>{getAssignedUserName(site.assignedUsers || site.assignedUser)}</td>
                   <td><span className={`status-tag status-${site.status || 'active'}`}>{site.status || 'active'}</span></td>
                   <td className="action-buttons">
                     <button className="button-icon" onClick={() => openModal('edit', site)}><EditIcon /> Editar</button>

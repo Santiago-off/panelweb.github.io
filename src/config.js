@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, enableIndexedDbPersistence, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
+import { getFirestore, enableMultiTabIndexedDbPersistence, CACHE_SIZE_UNLIMITED } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY || "AIzaSyBXMk0gVdlQdY9FVbLcQf9uO0hQEwI6rRk",
@@ -19,8 +19,8 @@ export const auth = getAuth(app);
 export const db = getFirestore(app);
 export { firebaseConfig };
 
-// Enable offline persistence
-enableIndexedDbPersistence(db, {cacheSizeBytes: CACHE_SIZE_UNLIMITED})
+// Enable offline persistence (multi-tab)
+enableMultiTabIndexedDbPersistence(db)
   .then(() => {
     console.log("Firestore persistence habilitada correctamente");
   })

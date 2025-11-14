@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, updateDoc, doc, setDoc } from 'firebase/firestore';
 import { db, mockData, checkFirebaseConnection } from '../../config';
 import './UserDashboard.css'; // Importa los estilos del panel de usuario
 import { useUserData } from '../../hooks/useUserData';
@@ -47,7 +47,7 @@ const SiteCard = ({ site, onManage, onCreateTicket }) => (
 );
 
 const UserDashboard = () => {
-  const { user } = useUserData();
+  const { userData } = useUserData();
   const [assignedSites, setAssignedSites] = useState([]);
   
   const [loading, setLoading] = useState(true);
@@ -55,9 +55,27 @@ const UserDashboard = () => {
   const [isCreateTicketModalOpen, setCreateTicketModalOpen] = useState(false);
   const [selectedSite, setSelectedSite] = useState(null);
   const [isManageSiteModalOpen, setManageSiteModalOpen] = useState(false);
+  const [toggling, setToggling] = useState(false);
+
+  const handleToggleMaintenance = async () => {
+    if (!selectedSite?.id) return;
+    setToggling(true);
+    try {
+      const nextStatus = selectedSite.status === 'maintenance' ? 'online' : 'maintenance';
+      await updateDoc(doc(db, 'sites', selectedSite.id), { status: nextStatus });
+      await setDoc(doc(db, 'publicSites', selectedSite.id), { status: nextStatus }, { merge: true });
+      const updated = { ...selectedSite, status: nextStatus };
+      setSelectedSite(updated);
+      setAssignedSites(prev => prev.map(s => s.id === updated.id ? updated : s));
+    } catch (e) {
+      console.error('No se pudo cambiar el estado de mantenimiento', e);
+    } finally {
+      setToggling(false);
+    }
+  };
 
   useEffect(() => {
-    if (!user?.uid) {
+    if (!userData?.uid) {
       setLoading(false);
       return;
     };
@@ -76,7 +94,7 @@ const UserDashboard = () => {
           plan: 'Premium',
           diskUsage: '500MB',
           diskQuota: '1GB',
-          assignedUsers: [user?.uid || 'user1']
+          assignedUsers: [userData?.uid || 'user1']
         },
         {
           id: 'site2',
@@ -87,7 +105,7 @@ const UserDashboard = () => {
           plan: 'Empresarial',
           diskUsage: '1.2GB',
           diskQuota: '2GB',
-          assignedUsers: [user?.uid || 'user1']
+          assignedUsers: [userData?.uid || 'user1']
         }
       ];
       setAssignedSites(filteredSites);
@@ -100,7 +118,7 @@ const UserDashboard = () => {
     // Simplificamos la consulta para asegurar que funcione correctamente
     const q = query(
       sitesRef,
-      where('assignedUsers', 'array-contains', user.uid)
+      where('assignedUsers', 'array-contains', userData.uid)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -113,7 +131,7 @@ const UserDashboard = () => {
     });
 
     return () => unsubscribe();
-  }, [user]);
+  }, [userData]);
 
   const handleManageSite = (site) => {
     setSelectedSite(site);
@@ -207,6 +225,9 @@ const UserDashboard = () => {
             <div className="site-actions-section">
               <h4>Acciones</h4>
               <div className="action-buttons">
+                <button className="button-secondary" onClick={handleToggleMaintenance} disabled={toggling}>
+                  {selectedSite.status === 'maintenance' ? 'Desactivar Mantenimiento' : 'Activar Mantenimiento'}
+                </button>
                 <button className="button-primary">
                   Panel de Control
                 </button>
