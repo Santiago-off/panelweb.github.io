@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
-import { doc, updateDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
+import { doc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 import { db } from '../../config';
 import AddUserModal from './users/AddUserModal';
@@ -14,7 +14,6 @@ const UserManagement = ({ users, sites }) => {
   const [modalState, setModalState] = useState({ type: null, user: null });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeTab, setActiveTab] = useState('info');
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({});
 
   // --- Funciones para manejar los modales ---
@@ -39,7 +38,6 @@ const UserManagement = ({ users, sites }) => {
       setModalState({ type: null, user: null }); // Resetea el estado del modal
       setActiveTab('info'); // Resetea la pestaña activa al cerrar
       setFormData({}); // Limpia los datos del formulario
-      setShowPassword(false); // Oculta la contraseña al cerrar
     }
   };
 
